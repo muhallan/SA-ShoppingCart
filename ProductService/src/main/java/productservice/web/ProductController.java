@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import productservice.domain.Product;
 import productservice.domain.Products;
+import productservice.domain.Quantity;
 import productservice.service.ProductService;
 
 @Controller
@@ -56,5 +57,27 @@ public class ProductController {
         }
         productService.addProduct(product);
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/{productNumber}/quantity")
+    public ResponseEntity<?> getProductQuantityByNumber(@PathVariable String productNumber) {
+        Product product = productService.findProductByNumber(productNumber);
+        if (product == null) {
+            return new ResponseEntity<>(new CustomErrorType("Product with productNumber= "
+                    + productNumber + " was not found"), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(product.getNumberInStock(), HttpStatus.OK);
+    }
+
+    @PutMapping("/products/{productNumber}/deduct_stock")
+    public ResponseEntity<?> updateProductQuantityByNumber(@PathVariable String productNumber, @RequestBody Quantity quantity) {
+        Product oldProduct = productService.findProductByNumber(productNumber);
+        if (oldProduct == null) {
+            return new ResponseEntity<>(new CustomErrorType("Product with productNumber= "
+                    + productNumber + " was not found"), HttpStatus.NOT_FOUND);
+        }
+        oldProduct.setNumberInStock(oldProduct.getNumberInStock() - quantity.getQuantity());
+        productService.addProduct(oldProduct);
+        return new ResponseEntity<>(oldProduct, HttpStatus.OK);
     }
 }
