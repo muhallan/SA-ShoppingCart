@@ -1,5 +1,8 @@
 package com.example.ShoppingCartCommandService;
 
+import com.example.ShoppingCartCommandService.domain.Customer;
+import com.example.ShoppingCartCommandService.domain.Product;
+import com.example.ShoppingCartCommandService.domain.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -10,12 +13,14 @@ public class ShoppingCartService {
     private ShoppingCartDAO shoppingCartDAO;
 
     @Autowired
-    private KafkaTemplate<String,ShoppingCart> kafkaTemplate;
+    private KafkaTemplate<String, ShoppingCart> kafkaTemplate;
 
-    public void createShoppingCart(Long customerId){
+    public void createShoppingCart(Customer customer){
         ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setCustomerId(customerId);
+        shoppingCart.setCustomerId(customer.getCustomerId());
+        shoppingCart.setShopingCartNumber(customer.getCartNumber());
         shoppingCartDAO.save(shoppingCart);
+        kafkaTemplate.send("order_created",shoppingCart);
     }
     public ShoppingCart getShoppingCart(Long cartNumber){
         return shoppingCartDAO.findById(cartNumber).get();
@@ -24,16 +29,16 @@ public class ShoppingCartService {
         shoppingCartDAO.save(cart);
     }
 
-    public void addProduct(Long cartNumber, ProductDto productDto){
+    public void addOrRemoveProduct(Long cartNumber, Product productDto){
        ShoppingCart cart = getShoppingCart(cartNumber);
-       cart.getCartLines().put(productDto.getProductNumber(),productDto);
+       if(cart.getCartLines().containsKey(productDto.getProductNumber()))
+           cart.getCartLines().remove(productDto.getProductNumber());
+       else{
+           cart.getCartLines().put(productDto.getProductNumber(),productDto);
+       }
        updateShoppingCart(cart);
     }
-    public void removeProduct(Long cartNumber, Long productNumber){
-        ShoppingCart cart = getShoppingCart(cartNumber);
-        cart.getCartLines().remove(productNumber);
-        updateShoppingCart(cart);
-    }
+
     public void deleteCart(Long cartNumber){
         shoppingCartDAO.deleteById(cartNumber);
     }

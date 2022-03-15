@@ -1,4 +1,4 @@
-package com.example.ShoppingCartCommandService;
+package com.example.ShoppingCartCommandService.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class ShoppingCart {
     @Id
     private Long shopingCartNumber;
     private Long customerId;
-    private HashMap<Long,ProductDto> cartLines = new HashMap<>();
+    private HashMap<Long, Product> cartLines = new HashMap<>();
 
 
     @Override
