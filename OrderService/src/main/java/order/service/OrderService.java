@@ -1,6 +1,7 @@
 package order.service;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,16 @@ public class OrderService {
 		return orderRepository.findByOrderNumber(productNumber);
 	}
 
+	public List<Order> findByCustomerID(String customerID) {
+		return orderRepository.findByCustomerID(customerID);
+	}
+
 	public void delete(String productNumber) {
 		Order contact = orderRepository.findByOrderNumber(productNumber);
 		orderRepository.delete(contact);
 	}
 
-	public Collection<Order> findAll() {
+	public List<Order> findAll() {
 		return orderRepository.findAll();
 	}
 }

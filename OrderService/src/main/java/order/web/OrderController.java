@@ -3,12 +3,13 @@ package order.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import order.domain.Order;
 import order.domain.Orders;
 import order.service.OrderService;
+
+import java.util.List;
 
 @RestController
 public class OrderController {
@@ -24,6 +25,21 @@ public class OrderController {
 					HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<Order>(contact, HttpStatus.OK);
+	}
+
+	@GetMapping("/orders/customers/{customerID}")
+	public ResponseEntity<?> getOrderByCustomerID(@PathVariable String customerID) {
+		List<Order> orders = orderService.findByCustomerID(customerID);
+
+		if (orders == null) {
+			return new ResponseEntity<CustomErrorType>(
+					new CustomErrorType("Order with customerID = " + customerID + " is not available"),
+					HttpStatus.NOT_FOUND);
+		}
+
+		Orders response = new Orders();
+		response.setOrders(orders);
+		return new ResponseEntity<Orders>(response, HttpStatus.OK);
 	}
 
 	@PostMapping("/orders")
