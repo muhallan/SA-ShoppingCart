@@ -1,7 +1,6 @@
 package productservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.MessageHeaders;
@@ -20,14 +19,12 @@ public class OrderCreatedService {
     @Autowired
     private ProductService productService;
 
-
     @KafkaListener(topics = "${kafka.topic.order_created}")
     public void receive(@Payload ShoppingCart shoppingCart,
                         @Headers MessageHeaders headers) {
 
         List<CartLine> cartLineList = shoppingCart.getCartLines();
         for (CartLine cartLine: cartLineList) {
-            System.out.println("received cartline: " + cartLine);
             Product product = productService.findProductByNumber(cartLine.getProductNumber());
             if (product == null) {
                 continue;
