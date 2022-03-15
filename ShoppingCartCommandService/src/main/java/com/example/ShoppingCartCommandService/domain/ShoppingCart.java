@@ -1,9 +1,6 @@
 package com.example.ShoppingCartCommandService.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,14 +8,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.HashMap;
 
 
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Document
 public class ShoppingCart {
     @Id
-    private Long shopingCartNumber;
+    private Long shoppingCartNumber;
     private Long customerId;
     private HashMap<Long, Product> cartLines = new HashMap<>();
 
@@ -26,7 +21,7 @@ public class ShoppingCart {
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                "shopingCartNumber=" + shopingCartNumber +
+                "shoppingCartNumber=" + shoppingCartNumber +
                 ", customerId=" + customerId +
                 ", cartLines=" + cartLines +
                 '}';
