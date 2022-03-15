@@ -1,23 +1,23 @@
 package order.domain;
 
-import java.util.Collection;
+import java.util.List;
 
 public class Orders {
-	Collection<Order> orders;
+	List<Order> orders;
 
 	public Orders() {
 
 	}
 
-	public Orders(Collection<Order> orders) {
+	public Orders(List<Order> orders) {
 		this.orders = orders;
 	}
 
-	public Collection<Order> getOrders() {
+	public List<Order> getOrders() {
 		return orders;
 	}
 
-	public void setOrders(Collection<Order> orders) {
+	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
 }

@@ -1,47 +1,35 @@
 package order.domain;
 
+import java.util.List;
+
 public class Order {
 
-	private String orderNumber;
-	private String productID;
-	private Integer quantity;
-//	private Double totalPrice;
-//	private Double totalTax;
+    private String orderNumber;
+    private String customerID;
 
-	public String getOrderNumber() {
-		return orderNumber;
-	}
+    private List<OrderLine> orderLines;
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
-	}
+    public String getCustomerID() {
+        return customerID;
+    }
 
-	public String getProductID() {
-		return productID;
-	}
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+    }
 
-	public void setProductID(String productID) {
-		this.productID = productID;
-	}
+    public String getOrderNumber() {
+        return orderNumber;
+    }
 
-	public Integer getQuantity() {
-		return quantity;
-	}
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
+    public void setOrderLines(List<OrderLine> orderLines) {
+        this.orderLines = orderLines;
+    }
 
-//	public Double getTotalPrice() {
-//		return totalPrice;
-//	}
-//	public void setTotalPrice(Double totalPrice) {
-//		this.totalPrice = totalPrice;
-//	}
-//	public Double getTotalTax() {
-//		return totalTax;
-//	}
-//	public void setTotalTax(Double totalTax) {
-//		this.totalTax = totalTax;
-//	}
+    public List<OrderLine> getOrderLines(List<OrderLine> orderLines) {
+        return orderLines;
+    }
 }
