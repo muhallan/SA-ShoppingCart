@@ -6,7 +6,7 @@ public class Order {
 
     private String orderNumber;
     private String customerID;
-    private String productID;
+
     private List<OrderLine> orderLines;
 
     public String getCustomerID() {
@@ -25,15 +25,11 @@ public class Order {
         this.orderNumber = orderNumber;
     }
 
-    public String getProductID() {
-        return productID;
-    }
-
-    public void setProductID(String productID) {
-        this.productID = productID;
-    }
-
     public void setOrderLines(List<OrderLine> orderLines) {
         this.orderLines = orderLines;
+    }
+
+    public List<OrderLine> getOrderLines(List<OrderLine> orderLines) {
+        return orderLines;
     }
 }
