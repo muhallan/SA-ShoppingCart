@@ -1,0 +1,2 @@
+kafka:
+  checkout_topic_name: CheckoutTopic
