@@ -21,22 +21,22 @@ zuul:
   ignoredServices: '*'
   routes:
     order-service:
-      path: /orders/**
+      path: /order-service/**
       serviceId: order-service
       stripPrefix: true
     product-service:
-      path: /products/**
+      path: /product-service/**
       serviceId: product-service
       stripPrefix: true
     customer-service:
-      path: /customers/**
+      path: /customer-service/**
       serviceId: customer-service
       stripPrefix: true
     cart-command-service:
-      path: /cart_command/**
+      path: /cart-command-service/**
       serviceId: cart-command-service
       stripPrefix: true
     cart-query-service:
-      path: /cart_query/**
+      path: /cart-query-service/**
       serviceId: cart-query-service
       stripPrefix: true

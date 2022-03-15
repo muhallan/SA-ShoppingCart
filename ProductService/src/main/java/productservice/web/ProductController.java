@@ -10,7 +10,7 @@ import productservice.domain.Products;
 import productservice.domain.Quantity;
 import productservice.service.ProductService;
 
-@Controller
+@RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
