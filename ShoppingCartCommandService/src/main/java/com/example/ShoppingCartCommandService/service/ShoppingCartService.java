@@ -103,11 +103,13 @@ public class ShoppingCartService {
         }
         return false;
     }
-    public boolean removeProduct(Long cartId, Long productId) throws JsonProcessingException {
+    public boolean removeProduct(Long cartId, String productId) throws JsonProcessingException {
         if(shoppingCartDAO.existsById(cartId)){
+            System.out.println("cart exists");
             ShoppingCart cart = shoppingCartDAO.findById(cartId).get();
             Product product = cart.getCartLines().get(productId);
             if(product!=null){
+                System.out.println("product found");
                 cart.getCartLines().remove(productId);
                 updateShoppingCart(cart);
                 ProductDto productDto = modelMapper.map(product,ProductDto.class);

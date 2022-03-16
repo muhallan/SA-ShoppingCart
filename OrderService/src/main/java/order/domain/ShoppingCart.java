@@ -19,7 +19,7 @@ public class ShoppingCart {
     @JsonProperty
     private String customerId;
     @JsonProperty
-	private List<Product> products;
+	private List<OrderLine> products;
 
     public String getShopingCartNumber() {
         return shoppingCartNumber;
@@ -37,11 +37,11 @@ public class ShoppingCart {
         this.customerId = customerId;
     }
 
-    public List<Product> getProducts() {
+    public List<OrderLine> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(List<OrderLine> products) {
         this.products = products;
     }
 
