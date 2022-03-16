@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.List;
 
 @NoArgsConstructor
@@ -14,31 +13,35 @@ import java.util.List;
 @Getter
 @Setter
 public class ShoppingCart {
-	@JsonProperty
-	private String shopingCartNumber;
-	@JsonProperty
+    @JsonProperty
+    private String shopingCartNumber;
+    @JsonProperty
     private String customerId;
-	@JsonProperty
-    private List<Product> cartLines;
-	public String getShopingCartNumber() {
-		return shopingCartNumber;
-	}
-	public void setShopingCartNumber(String shopingCartNumber) {
-		this.shopingCartNumber = shopingCartNumber;
-	}
-	public String getCustomerId() {
-		return customerId;
-	}
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
+    @JsonProperty
+	private List<Product> cartLines;
 
-	public List<Product> getCartLines() {
-		return cartLines;
-	}
+    public String getShopingCartNumber() {
+        return shopingCartNumber;
+    }
 
-	public void setCartLines(List<Product> cartLines) {
-		this.cartLines = cartLines;
-	}
+    public void setShopingCartNumber(String shopingCartNumber) {
+        this.shopingCartNumber = shopingCartNumber;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public List<Product> getCartLines() {
+        return cartLines;
+    }
+
+    public void setCartLines(List<Product> cartLines) {
+        this.cartLines = cartLines;
+    }
 
 }

@@ -6,7 +6,6 @@ public class Orders {
 	List<Order> orders;
 
 	public Orders() {
-
 	}
 
 	public Orders(List<Order> orders) {
