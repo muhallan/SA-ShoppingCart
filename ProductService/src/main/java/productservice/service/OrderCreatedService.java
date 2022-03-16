@@ -1,6 +1,7 @@
 package productservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
@@ -12,12 +13,13 @@ import productservice.domain.ShoppingCart;
 
 import java.util.List;
 
+@RefreshScope
 @Service
 public class OrderCreatedService {
     @Autowired
     private ProductService productService;
 
-    @KafkaListener(topics = {"order_created"})
+    @KafkaListener(topics = "${kafka.topic.order_created}")
     public void receive(@Payload ShoppingCart shoppingCart,
                         @Headers MessageHeaders headers) {
 

@@ -1,0 +1,42 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: api-gateway
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+
+
+zuul:
+  host:
+    connect-timeout-millis: 5000000
+    socket-timeout-millis: 5000000
+  ignoredServices: '*'
+  routes:
+    order-service:
+      path: /order-service/**
+      serviceId: order-service
+      stripPrefix: true
+    product-service:
+      path: /product-service/**
+      serviceId: product-service
+      stripPrefix: true
+    customer-service:
+      path: /customer-service/**
+      serviceId: customer-service
+      stripPrefix: true
+    cart-command-service:
+      path: /cart-command-service/**
+      serviceId: cart-command-service
+      stripPrefix: true
+    cart-query-service:
+      path: /cart-query-service/**
+      serviceId: cart-query-service
+      stripPrefix: true
