@@ -11,7 +11,7 @@ public class Order {
 	@Id
 	private String orderNumber;
 	private String customerID;
-	private Customer customer;
+	private CustomerInfo customerInfo;
 	private List<Product> orderLines;
 
 	public String getOrderNumber() {
@@ -22,12 +22,12 @@ public class Order {
 		this.orderNumber = orderNumber;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public CustomerInfo getCustomerInfo() {
+		return customerInfo;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerInfo(CustomerInfo customerInfo) {
+		this.customerInfo = customerInfo;
 	}
 
 	public List<Product> getOrderLines() {

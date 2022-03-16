@@ -1,6 +1,6 @@
 package order.domain;
 
-public class Customer {
+public class CustomerInfo {
     private String customerId;
     private String firstName;
     private String lastName;
@@ -10,9 +10,9 @@ public class Customer {
     private String phone;
     private String email;
 
-    public Customer() {}
+    public CustomerInfo() {}
 
-    public Customer(String cId, String firstName, String lastName, String street, String city, String zip, String phone, String email) {
+    public CustomerInfo(String cId, String firstName, String lastName, String street, String city, String zip, String phone, String email) {
         this.customerId = cId;
         this.firstName = firstName;
         this.lastName = lastName;

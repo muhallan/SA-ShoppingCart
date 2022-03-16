@@ -1,9 +1,8 @@
 package order.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import order.domain.Customer;
+import order.domain.CustomerInfo;
 import order.domain.Order;
-import order.domain.Product;
 import order.domain.ShoppingCart;
 import order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -35,15 +33,14 @@ public class CheckoutSubscriber {
 		try {
 
 			ShoppingCart cart = mapper.readValue(message, ShoppingCart.class);
-			Customer customer = customerFeignClient.getCustomer(cart.getCustomerId().toString());
+			CustomerInfo customer = customerFeignClient.getCustomer(cart.getCustomerId().toString());
 
 			Order order = new Order();
 			order.setCustomerID(cart.getCustomerId().toString());
 			order.setOrderNumber(UUID.randomUUID().toString());
-			order.setCustomer(customer);
+			order.setCustomerInfo(customer);
 			if(cart.getCartLines() != null)
-			order.setOrderLines(
-					new ArrayList<Product>( cart.getCartLines().values()));
+				order.setOrderLines(cart.getCartLines());
 			orderService.add(order);
 
 			System.out.println("Order saved with OrderNumber = " + order.getOrderNumber());
@@ -62,6 +59,6 @@ public class CheckoutSubscriber {
 	interface CustomerFeignClient {
 
 		@RequestMapping("customer/{customerId}")
-		public Customer getCustomer(@PathVariable String customerId);
+		public CustomerInfo getCustomer(@PathVariable String customerId);
 	}
 }
