@@ -1,5 +1,6 @@
 package order.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,19 +14,19 @@ import java.util.List;
 @Getter
 @Setter
 public class ShoppingCart {
-    @JsonProperty
-    private String shopingCartNumber;
+    @JsonIgnoreProperties
+    private String shoppingCartNumber;
     @JsonProperty
     private String customerId;
     @JsonProperty
-	private List<Product> cartLines;
+	private List<Product> products;
 
     public String getShopingCartNumber() {
-        return shopingCartNumber;
+        return shoppingCartNumber;
     }
 
     public void setShopingCartNumber(String shopingCartNumber) {
-        this.shopingCartNumber = shopingCartNumber;
+        this.shoppingCartNumber = shopingCartNumber;
     }
 
     public String getCustomerId() {
@@ -36,12 +37,12 @@ public class ShoppingCart {
         this.customerId = customerId;
     }
 
-    public List<Product> getCartLines() {
-        return cartLines;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setCartLines(List<Product> cartLines) {
-        this.cartLines = cartLines;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
 }

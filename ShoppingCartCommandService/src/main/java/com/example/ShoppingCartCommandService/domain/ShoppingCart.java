@@ -15,7 +15,7 @@ public class ShoppingCart {
     @Id
     private Long shoppingCartNumber;
     private String customerId;
-    private HashMap<Long, Product> cartLines = new HashMap<>();
+    private HashMap<String, Product> cartLines = new HashMap<>();
 
 
     @Override

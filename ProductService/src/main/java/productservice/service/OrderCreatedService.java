@@ -1,5 +1,7 @@
 package productservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,10 +22,11 @@ public class OrderCreatedService {
     private ProductService productService;
 
     @KafkaListener(topics = "${kafka.topic.order_created}")
-    public void receive(@Payload ShoppingCart shoppingCart,
-                        @Headers MessageHeaders headers) {
-
-        List<CartLine> cartLineList = shoppingCart.getCartLines();
+    public void receive(@Payload String cartString,
+                        @Headers MessageHeaders headers) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ShoppingCart cart = mapper.readValue(cartString,ShoppingCart.class);
+        List<CartLine> cartLineList = cart.getCartLines();
         for (CartLine cartLine: cartLineList) {
             Product product = productService.findProductByNumber(cartLine.getProductNumber());
             if (product == null) {
