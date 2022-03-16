@@ -1,5 +1,6 @@
 package productservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,11 +21,18 @@ public class OrderCreatedService {
     private ProductService productService;
 
     @KafkaListener(topics = "${kafka.topic.order_created}")
-    public void receive(@Payload ShoppingCart shoppingCart,
+    public void receive(@Payload String message,
                         @Headers MessageHeaders headers) {
 
+        ObjectMapper mapper = new ObjectMapper();
+        ShoppingCart shoppingCart = null;
+        try {
+            shoppingCart = mapper.readValue(message, ShoppingCart.class);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         List<CartLine> cartLineList = shoppingCart.getCartLines();
-        for (CartLine cartLine: cartLineList) {
+        for (CartLine cartLine : cartLineList) {
             Product product = productService.findProductByNumber(cartLine.getProductNumber());
             if (product == null) {
                 continue;
