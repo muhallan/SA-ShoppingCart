@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class ShoppingCart {
     @Id
     private Long shoppingCartNumber;
-    private Long customerId;
+    private String customerId;
     private HashMap<Long, Product> cartLines = new HashMap<>();
 
 

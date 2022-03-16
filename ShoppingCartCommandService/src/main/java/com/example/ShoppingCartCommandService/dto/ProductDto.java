@@ -1,8 +1,10 @@
-package com.example.ShoppingCartCommandService.domain;
+package com.example.ShoppingCartCommandService.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ProductDto {
     private Long cartNumber;
     private Long productNumber;
