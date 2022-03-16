@@ -15,21 +15,21 @@ import java.util.List;
 @Setter
 public class ShoppingCart {
 	@JsonProperty
-	private Long shopingCartNumber;
+	private String shopingCartNumber;
 	@JsonProperty
-    private Long customerId;
+    private String customerId;
 	@JsonProperty
     private List<Product> cartLines;
-	public Long getShopingCartNumber() {
+	public String getShopingCartNumber() {
 		return shopingCartNumber;
 	}
-	public void setShopingCartNumber(Long shopingCartNumber) {
+	public void setShopingCartNumber(String shopingCartNumber) {
 		this.shopingCartNumber = shopingCartNumber;
 	}
-	public Long getCustomerId() {
+	public String getCustomerId() {
 		return customerId;
 	}
-	public void setCustomerId(Long customerId) {
+	public void setCustomerId(String customerId) {
 		this.customerId = customerId;
 	}
 
