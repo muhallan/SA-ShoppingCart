@@ -29,27 +29,46 @@ public class CartQueryService {
     public List<ShoppingCart> getShoppingCarts(){
         return shoppingCartDAO.findAll();
     }
-    public void addOrRemoveProduct(Long cartNumber, Product productDto){
-        ShoppingCart cart = getShoppingCart(cartNumber);
-        if(cart.getCartLines().containsKey(productDto.getProductNumber()))
-            cart.getCartLines().remove(productDto.getProductNumber());
-        else{
-            cart.getCartLines().put(productDto.getProductNumber(),productDto);
-        }
-        updateShoppingCart(cart);
-    }
+
     public void updateShoppingCart(ShoppingCart cart){
         shoppingCartDAO.save(cart);
     }
-    @KafkaListener(topics = {"1"})
-    public void receiveOrder(@Payload String cartString) throws JsonProcessingException {
-        ShoppingCart shoppingCart = objectMapper.readValue(cartString,ShoppingCart.class);
-        shoppingCartDAO.save(shoppingCart);
+    @KafkaListener(topics = {"CART-CREATED"})
+    public void createCart(@Payload String cartString) throws JsonProcessingException {
+        ShoppingCart newCart = objectMapper.readValue(cartString,ShoppingCart.class);
+        shoppingCartDAO.save(newCart);
     }
-    @KafkaListener(topics = {"3"})
-    public void updateProductInCart(@Payload String productDtoString) throws JsonProcessingException {
+   @KafkaListener(topics = {"CHECKOUT-FOR-QUERY"})
+    public void checkOut(@Payload Long cartNumber)  {
+       shoppingCartDAO.deleteById(cartNumber);
+    }
+
+    @KafkaListener(topics = {"REMOVE-PRODUCT"})
+    public void removeProduct(@Payload String productDtoString ) throws  JsonProcessingException{
+
         ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
         Product product = modelMapper.map(productDto,Product.class);
-        addOrRemoveProduct(productDto.getCartNumber(),product);
+        ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
+        cart.getCartLines().remove(product.getProductNumber());
+        shoppingCartDAO.save(cart);
+
+    }
+    @KafkaListener(topics = {"ADD-PRODUCT"})
+    public void addProduct(@Payload String productDtoString ) throws  JsonProcessingException{
+
+        ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
+        Product product = modelMapper.map(productDto,Product.class);
+        ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
+        cart.getCartLines().put(product.getProductNumber(),product);
+        shoppingCartDAO.save(cart);
+    }
+
+    @KafkaListener(topics = {"CHANGE-QUANTITY"})
+    public  void changeQuantity(@Payload String productDtoString) throws JsonProcessingException {
+        ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
+        Product product = modelMapper.map(productDto,Product.class);
+        ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
+        cart.getCartLines().get(product.getProductNumber()).setQuantity(product.getQuantity());
+        shoppingCartDAO.save(cart);
     }
 }
