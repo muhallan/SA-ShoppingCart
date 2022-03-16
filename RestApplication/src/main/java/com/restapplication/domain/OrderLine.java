@@ -1,33 +1,27 @@
 package com.restapplication.domain;
 
-public class ShoppingCartProduct {
-    private Long productNumber;
+public class OrderLine {
+
+    private String productNumber;
+
     private int quantity;
+
     private double price;
 
-    public ShoppingCartProduct() {
+    public OrderLine() {
     }
 
-    public ShoppingCartProduct(Long productNumber, int quantity, double price) {
+    public OrderLine(String productNumber, int quantity, double price) {
         this.productNumber = productNumber;
         this.quantity = quantity;
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "ProductDto{" +
-                "productNumber=" + productNumber +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }
-
-    public Long getProductNumber() {
+    public String getProductNumber() {
         return productNumber;
     }
 
-    public void setProductNumber(Long productNumber) {
+    public void setProductNumber(String productNumber) {
         this.productNumber = productNumber;
     }
 
@@ -45,5 +39,14 @@ public class ShoppingCartProduct {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "CartLine{" +
+                "productNumber='" + productNumber + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
     }
 }

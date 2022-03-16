@@ -23,7 +23,7 @@ public class CheckoutSubscriber {
 	@Autowired
 	private CustomerFeignClient customerFeignClient;
 
-	@KafkaListener(topics = { "CheckoutTopic" }, groupId = "checkout")
+	@KafkaListener(topics = { "${kafka.checkout_topic_name}" }, groupId = "checkout")
 	public void receive(@Payload String message) {
 
 		System.out.println("Receiver received message= " + message);
@@ -46,8 +46,8 @@ public class CheckoutSubscriber {
 			order.setCustomerID(cart.getCustomerId().toString());
 			order.setOrderNumber(UUID.randomUUID().toString());
 			order.setCustomerInfo(customer);
-			if(cart.getCartLines() != null)
-				order.setOrderLines(cart.getCartLines());
+			if(cart.getProducts() != null)
+				order.setOrderLines(cart.getProducts());
 			orderService.add(order);
 
 			System.out.println("Successfully saved.\n" + mapper.writeValueAsString(order));
@@ -67,5 +67,11 @@ public class CheckoutSubscriber {
 
 		@RequestMapping("customer/{customerId}")
 		public CustomerInfo getCustomer(@PathVariable String customerId);
+	}
+	@FeignClient("product-service")
+	interface ProductFeignClient {
+
+		@RequestMapping("products/{productId}")
+		public CustomerInfo getProduct(@PathVariable String productId);
 	}
 }

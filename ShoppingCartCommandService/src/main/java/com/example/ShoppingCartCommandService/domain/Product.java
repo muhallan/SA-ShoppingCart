@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 
 public class Product {
-    private Long productNumber;
+    private String productNumber;
     private int quantity;
     private double price;
 

@@ -8,32 +8,32 @@ import java.util.HashMap;
 @Document
 public class ShoppingCart {
     @Id
-    private Long shopingCartNumber;
-    private Long customerId;
+    private Long shoppingCartNumber;
+    private String customerId;
     private HashMap<Long,ProductDto> cartLines = new HashMap<>();
 
     public ShoppingCart() {
     }
 
-    public ShoppingCart(Long shopingCartNumber, Long customerId, HashMap<Long, ProductDto> cartLines) {
-        this.shopingCartNumber = shopingCartNumber;
+    public ShoppingCart(Long shoppingCartNumber, String customerId, HashMap<Long, ProductDto> cartLines) {
+        this.shoppingCartNumber = shoppingCartNumber;
         this.customerId = customerId;
         this.cartLines = cartLines;
     }
 
-    public Long getShopingCartNumber() {
-        return shopingCartNumber;
+    public Long getShoppingCartNumber() {
+        return shoppingCartNumber;
     }
 
-    public void setShopingCartNumber(Long shopingCartNumber) {
-        this.shopingCartNumber = shopingCartNumber;
+    public void setShoppingCartNumber(Long shoppingCartNumber) {
+        this.shoppingCartNumber = shoppingCartNumber;
     }
 
-    public Long getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
 
@@ -48,7 +48,7 @@ public class ShoppingCart {
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                "shopingCartNumber=" + shopingCartNumber +
+                "shoppingCartNumber=" + shoppingCartNumber +
                 ", customerId=" + customerId +
                 ", cartLines=" + cartLines +
                 '}';

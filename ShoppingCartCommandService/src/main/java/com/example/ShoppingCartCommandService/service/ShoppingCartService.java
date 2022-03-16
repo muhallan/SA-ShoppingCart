@@ -2,20 +2,21 @@ package com.example.ShoppingCartCommandService.service;
 
 import com.example.ShoppingCartCommandService.dao.ShoppingCartDAO;
 import com.example.ShoppingCartCommandService.domain.*;
-import com.example.ShoppingCartCommandService.dto.ProductDto;
-import com.example.ShoppingCartCommandService.dto.ProductForOrderDto;
-import com.example.ShoppingCartCommandService.dto.ProductForProductDto;
-import com.example.ShoppingCartCommandService.dto.ShoppingCartDto;
+import com.example.ShoppingCartCommandService.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartService {
@@ -28,6 +29,9 @@ public class ShoppingCartService {
 
     @Autowired
     private KafkaTemplate<String, Long> kafkaTemplate2;
+
+    @Autowired
+    private ProductFeignClient productFeignClient;
 
 
 
@@ -55,18 +59,24 @@ public class ShoppingCartService {
         shoppingCartDAO.save(cart);
     }
 
-    public boolean changeQuantity(Quantity quantity, Long cartId, Long productId) throws JsonProcessingException {
+    public boolean changeQuantity(Quantity quantity, Long cartId, String productId) throws JsonProcessingException {
         if(shoppingCartDAO.existsById(cartId)){
             ShoppingCart cart = shoppingCartDAO.findById(cartId).get();
             Product product = cart.getCartLines().get(productId);
             if(product!=null){
-                product.setQuantity(quantity.getQuantity());
-                updateShoppingCart(cart);
-                ProductDto productDto = modelMapper.map(product,ProductDto.class);
-                productDto.setCartNumber(cartId);
-                String productDtoString = objectMapper.writeValueAsString(productDto);
-                kafkaTemplate.send("CHANGE-QUANTITY", productDtoString);
-                return true;
+                ProductForStock checkStock = getProduct(product.getProductNumber());
+                if(quantity.getQuantity()>checkStock.getNumberInStock())
+                    return false;
+                else{
+                    product.setQuantity(quantity.getQuantity());
+                    updateShoppingCart(cart);
+                    ProductDto productDto = modelMapper.map(product,ProductDto.class);
+                    productDto.setCartNumber(cartId);
+                    String productDtoString = objectMapper.writeValueAsString(productDto);
+                    kafkaTemplate.send("CHANGE-QUANTITY", productDtoString);
+                    return true;
+                }
+
             }
         }
         return false;
@@ -76,23 +86,30 @@ public class ShoppingCartService {
             ShoppingCart cart = shoppingCartDAO.findById(cartId).get();
             Product productCheck = cart.getCartLines().get(product.getProductNumber());
             if(productCheck == null){
-                cart.getCartLines().put(product.getProductNumber(),product);
-                updateShoppingCart(cart);
-                ProductDto productDto = modelMapper.map(product,ProductDto.class);
-                productDto.setCartNumber(cartId);
-                String productDtoString = objectMapper.writeValueAsString(productDto);
-                System.out.println(productDtoString);
-                kafkaTemplate.send("ADD-PRODUCT", productDtoString);
-                return true;
+                ProductForStock checkStock = getProduct(product.getProductNumber());
+                if(product.getQuantity()>checkStock.getNumberInStock())
+                    return false;
+                else{
+                    cart.getCartLines().put(product.getProductNumber(),product);
+                    updateShoppingCart(cart);
+                    ProductDto productDto = modelMapper.map(product,ProductDto.class);
+                    productDto.setCartNumber(cartId);
+                    String productDtoString = objectMapper.writeValueAsString(productDto);
+                    System.out.println(productDtoString);
+                    kafkaTemplate.send("ADD-PRODUCT", productDtoString);
+                    return true;
+                }
             }
         }
         return false;
     }
-    public boolean removeProduct(Long cartId, Long productId) throws JsonProcessingException {
+    public boolean removeProduct(Long cartId, String productId) throws JsonProcessingException {
         if(shoppingCartDAO.existsById(cartId)){
+            System.out.println("cart exists");
             ShoppingCart cart = shoppingCartDAO.findById(cartId).get();
             Product product = cart.getCartLines().get(productId);
             if(product!=null){
+                System.out.println("product found");
                 cart.getCartLines().remove(productId);
                 updateShoppingCart(cart);
                 ProductDto productDto = modelMapper.map(product,ProductDto.class);
@@ -120,10 +137,15 @@ public class ShoppingCartService {
         if(shoppingCartDAO.existsById(cartNumber)){
             ShoppingCart cart = shoppingCartDAO.findById(cartNumber).get();
             //String cartString = objectMapper.writeValueAsString(cart);
-            List<Product> products = convertToList(cart.getCartLines());
-            shoppingCartDAO.deleteById(cartNumber);
-            sendCheckOutMessage(products,cart.getCustomerId());
-            kafkaTemplate2.send("CHECKOUT-FOR-QUERY",cart.getShoppingCartNumber());
+            List<Product> products = cart.getCartLines().values().stream().collect(Collectors.toList());
+            for(Product p: products)
+                if(p.getQuantity()>getProduct(p.getProductNumber()).getNumberInStock())
+                    return false;
+            else{
+                shoppingCartDAO.deleteById(cartNumber);
+                sendCheckOutMessage(products,cart.getCustomerId());
+                kafkaTemplate2.send("CHECKOUT-FOR-QUERY",cart.getShoppingCartNumber());
+            }
         }
         return true;
 
@@ -144,5 +166,14 @@ public class ShoppingCartService {
         productForProductDto.setProducts(products);
         String productStockString = objectMapper.writeValueAsString(productForProductDto);
         kafkaTemplate.send("CHECKOUT-FOR-PRODUCT",productStockString);
+    }
+    @FeignClient("product-service")
+    interface ProductFeignClient{
+        @RequestMapping("/products/{productNumber}")
+        ProductForStock getProduct(@PathVariable("productNumber") String productNumber);
+    }
+
+    private ProductForStock getProduct(String productNumber){
+        return productFeignClient.getProduct(productNumber);
     }
 }

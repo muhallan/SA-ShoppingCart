@@ -26,7 +26,7 @@ public class ShoppingCartController {
     }
     @PutMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> updateCartQuantity(@RequestBody Quantity quantity, @PathVariable Long cartId,
-                                   @PathVariable Long productNumber) throws JsonProcessingException {
+                                   @PathVariable String productNumber) throws JsonProcessingException {
 
         if(shoppingCartService.changeQuantity(quantity,cartId,productNumber))
             return new ResponseEntity<>("SUCCESSFULLY UPDATED QUANTITY", HttpStatus.OK);
@@ -42,7 +42,8 @@ public class ShoppingCartController {
             return new ResponseEntity<String>("PRODUCT NOT ADDED", HttpStatus.BAD_REQUEST);
     }
     @DeleteMapping("/{cartId}/products/{productNumber}")
-    public ResponseEntity<String> removeProduct(@PathVariable Long cartId, @PathVariable Long productNumber) throws JsonProcessingException {
+    public ResponseEntity<String> removeProduct(@PathVariable Long cartId, @PathVariable String productNumber) throws JsonProcessingException {
+        System.out.println("cardId " + cartId + " pNo " + productNumber);
         if(shoppingCartService.removeProduct(cartId,productNumber))
             return new ResponseEntity<>("SUCCESSFULLY REMOVED PRODUCT", HttpStatus.OK);
         else
