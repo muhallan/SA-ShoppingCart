@@ -1,35 +1,48 @@
 package order.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.List;
 
+@Document
 public class Order {
 
-    private String orderNumber;
-    private String customerID;
+	@Id
+	private String orderNumber;
+	private String customerID;
+	private Customer customer;
+	private List<Product> orderLines;
 
-    private List<OrderLine> orderLines;
+	public String getOrderNumber() {
+		return orderNumber;
+	}
 
-    public String getCustomerID() {
-        return customerID;
-    }
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
-    }
+	public Customer getCustomer() {
+		return customer;
+	}
 
-    public String getOrderNumber() {
-        return orderNumber;
-    }
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
-    public void setOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
-    }
+	public List<Product> getOrderLines() {
+		return orderLines;
+	}
 
-    public void setOrderLines(List<OrderLine> orderLines) {
-        this.orderLines = orderLines;
-    }
+	public void setOrderLines(List<Product> orderLines) {
+		this.orderLines = orderLines;
+	}
 
-    public List<OrderLine> getOrderLines(List<OrderLine> orderLines) {
-        return orderLines;
-    }
+	public String getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(String customerId) {
+		this.customerID = customerId;
+	}
 }
