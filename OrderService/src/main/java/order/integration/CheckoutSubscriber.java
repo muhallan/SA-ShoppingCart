@@ -6,6 +6,8 @@ import order.domain.Order;
 import order.domain.ShoppingCart;
 import order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
 
+@RefreshScope
 @Service
 public class CheckoutSubscriber {
 	@Autowired
@@ -23,9 +26,12 @@ public class CheckoutSubscriber {
 	@Autowired
 	private CustomerFeignClient customerFeignClient;
 
+	@Value("${kafka.checkout_topic_name}")
+	private String test;
+
 	@KafkaListener(topics = { "${kafka.checkout_topic_name}" }, groupId = "checkout")
 	public void receive(@Payload String message) {
-
+		System.out.println("value: " + test);
 		System.out.println("Receiver received message= " + message);
 
 		ObjectMapper mapper = new ObjectMapper();

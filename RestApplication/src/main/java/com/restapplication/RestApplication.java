@@ -26,11 +26,11 @@ public class RestApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String customerUrl = "http://localhost:8081/customer";
-        String productUrl = "http://localhost:8091/products";
-        String orderUrl = "http://localhost:8083/orders";
-        String shoppingCartUrl = "http://localhost:8088/carts";
-        String shoppingCartServiceUrl = "http://localhost:8085/carts";
+        String customerUrl = "http://localhost:8086/customer-service/customer";
+        String productUrl = "http://localhost:8086/product-service/products";
+        String orderUrl = "http://localhost:8086/order-service/orders";
+        String shoppingCartUrl = "http://localhost:8086/cart-command-service/carts";
+        String shoppingCartServiceUrl = "http://localhost:8086/cart-query-service/carts";
 
         /**** 1. Add a number of products in the product service ****/
         //add product1
