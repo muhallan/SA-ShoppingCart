@@ -12,7 +12,7 @@ public class Order {
 	private String orderNumber;
 	private String customerID;
 	private CustomerInfo customerInfo;
-	private List<Product> orderLines;
+	private List<OrderLine> orderLines;
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -30,11 +30,11 @@ public class Order {
 		this.customerInfo = customerInfo;
 	}
 
-	public List<Product> getOrderLines() {
+	public List<OrderLine> getOrderLines() {
 		return orderLines;
 	}
 
-	public void setOrderLines(List<Product> orderLines) {
+	public void setOrderLines(List<OrderLine> orderLines) {
 		this.orderLines = orderLines;
 	}
 

@@ -68,4 +68,10 @@ public class CheckoutSubscriber {
 		@RequestMapping("customer/{customerId}")
 		public CustomerInfo getCustomer(@PathVariable String customerId);
 	}
+	@FeignClient("product-service")
+	interface ProductFeignClient {
+
+		@RequestMapping("products/{productId}")
+		public CustomerInfo getProduct(@PathVariable String productId);
+	}
 }
