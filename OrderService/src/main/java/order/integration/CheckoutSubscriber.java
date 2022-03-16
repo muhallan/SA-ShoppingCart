@@ -33,7 +33,14 @@ public class CheckoutSubscriber {
 		try {
 
 			ShoppingCart cart = mapper.readValue(message, ShoppingCart.class);
-			CustomerInfo customer = customerFeignClient.getCustomer(cart.getCustomerId().toString());
+			CustomerInfo customer = null;
+
+			try {
+				customer = customerFeignClient.getCustomer(cart.getCustomerId().toString());
+			} catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 
 			Order order = new Order();
 			order.setCustomerID(cart.getCustomerId().toString());
@@ -43,7 +50,7 @@ public class CheckoutSubscriber {
 				order.setOrderLines(cart.getCartLines());
 			orderService.add(order);
 
-			System.out.println("Order saved with OrderNumber = " + order.getOrderNumber());
+			System.out.println("Successfully saved.\n" + mapper.writeValueAsString(order));
 
 		} catch (Exception e) {
 			e.printStackTrace();
