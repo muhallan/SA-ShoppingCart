@@ -26,7 +26,7 @@ public class ShoppingCartController {
     }
     @PutMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> updateCartQuantity(@RequestBody Quantity quantity, @PathVariable Long cartId,
-                                   @PathVariable Long productNumber) throws JsonProcessingException {
+                                   @PathVariable String productNumber) throws JsonProcessingException {
 
         if(shoppingCartService.changeQuantity(quantity,cartId,productNumber))
             return new ResponseEntity<>("SUCCESSFULLY UPDATED QUANTITY", HttpStatus.OK);
