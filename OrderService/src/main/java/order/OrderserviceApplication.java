@@ -11,7 +11,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableFeignClients
 @EnableDiscoveryClient
-@EnableEurekaClient
 @EnableHystrix
 @EnableHystrixDashboard
 public class OrderserviceApplication {

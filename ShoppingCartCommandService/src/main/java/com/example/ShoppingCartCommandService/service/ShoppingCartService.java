@@ -95,6 +95,8 @@ public class ShoppingCartService {
                     ProductDto productDto = modelMapper.map(product,ProductDto.class);
                     productDto.setCartNumber(cartId);
                     String productDtoString = objectMapper.writeValueAsString(productDto);
+                    System.out.println(" add product service before sending to kafka");
+
                     System.out.println(productDtoString);
                     kafkaTemplate.send("ADD-PRODUCT", productDtoString);
                     return true;

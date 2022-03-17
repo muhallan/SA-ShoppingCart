@@ -10,5 +10,5 @@ import lombok.*;
 public class CartLine {
     private int quantity;
     private String productNumber;
-
+    private double price;
 }
