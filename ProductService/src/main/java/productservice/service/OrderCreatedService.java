@@ -30,7 +30,8 @@ public class OrderCreatedService {
                         @Headers MessageHeaders headers) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         ShoppingCart cart = mapper.readValue(cartString, ShoppingCart.class);
-        List<CartLine> cartLineList = cart.getCartLines();
+        List<CartLine> cartLineList = cart.getProducts();
+
         for (CartLine cartLine: cartLineList) {
             Product product = productService.findProductByNumber(cartLine.getProductNumber());
             if (product == null) {

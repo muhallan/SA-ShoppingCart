@@ -10,5 +10,5 @@ import java.util.List;
 @ToString
 public class ShoppingCart {
     String shoppingCartNumber;
-    List<CartLine> cartLines;
+    List<CartLine> products;
 }

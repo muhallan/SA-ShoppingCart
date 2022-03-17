@@ -31,6 +31,7 @@ public class CartQueryController {
     @GetMapping()
     public ResponseEntity<?> getCart(){
         if(cartQueryService.getShoppingCarts() !=null){
+            System.out.println(cartQueryService.getShoppingCarts());
             return new ResponseEntity<List<ShoppingCart>>(cartQueryService.getShoppingCarts(), HttpStatus.OK);
         }else{
             return new ResponseEntity<String>("COULDN'T GET CARTS", HttpStatus.BAD_REQUEST);

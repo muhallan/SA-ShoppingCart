@@ -15,18 +15,18 @@ public class ShoppingCart {
     public ShoppingCart() {
     }
 
-    public ShoppingCart(Long shopingCartNumber, String customerId, HashMap<Long, ProductDto> cartLines) {
-        this.shoppingCartNumber = shopingCartNumber;
+    public ShoppingCart(Long shoppingCartNumber, String customerId, HashMap<Long, ProductDto> cartLines) {
+        this.shoppingCartNumber = shoppingCartNumber;
         this.customerId = customerId;
         this.cartLines = cartLines;
     }
 
-    public Long getShopingCartNumber() {
+    public Long getShoppingCartNumber() {
         return shoppingCartNumber;
     }
 
-    public void setShopingCartNumber(Long shopingCartNumber) {
-        this.shoppingCartNumber = shopingCartNumber;
+    public void setShoppingCartNumber(Long shoppingCartNumber) {
+        this.shoppingCartNumber = shoppingCartNumber;
     }
 
     public String getCustomerId() {

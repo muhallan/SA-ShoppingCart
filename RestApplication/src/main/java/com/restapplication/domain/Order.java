@@ -1,12 +1,16 @@
 package com.restapplication.domain;
 
+import org.springframework.data.annotation.Id;
+
+import java.util.List;
+
 public class Order {
 
+	@Id
 	private String orderNumber;
-	private String productID;
-	private Integer quantity;
-//	private Double totalPrice;
-//	private Double totalTax;
+	private String customerID;
+	private CustomerInfo customerInfo;
+	private List<OrderLine> orderLines;
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -16,41 +20,36 @@ public class Order {
 		this.orderNumber = orderNumber;
 	}
 
-	public String getProductID() {
-		return productID;
+	public CustomerInfo getCustomerInfo() {
+		return customerInfo;
 	}
 
-	public void setProductID(String productID) {
-		this.productID = productID;
+	public void setCustomerInfo(CustomerInfo customerInfo) {
+		this.customerInfo = customerInfo;
 	}
 
-	public Integer getQuantity() {
-		return quantity;
+	public List<OrderLine> getOrderLines() {
+		return orderLines;
 	}
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+	public void setOrderLines(List<OrderLine> orderLines) {
+		this.orderLines = orderLines;
+	}
+
+	public String getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(String customerId) {
+		this.customerID = customerId;
 	}
 
 	@Override
 	public String toString() {
 		return "Order{" +
 				"orderNumber='" + orderNumber + '\'' +
-				", productID='" + productID + '\'' +
-				", quantity=" + quantity +
+				", customerID='" + customerID + '\'' +
+				", orderLines=" + orderLines +
 				'}';
 	}
-
-	//	public Double getTotalPrice() {
-//		return totalPrice;
-//	}
-//	public void setTotalPrice(Double totalPrice) {
-//		this.totalPrice = totalPrice;
-//	}
-//	public Double getTotalTax() {
-//		return totalTax;
-//	}
-//	public void setTotalTax(Double totalTax) {
-//		this.totalTax = totalTax;
-//	}
 }

@@ -95,6 +95,8 @@ public class ShoppingCartService {
                     ProductDto productDto = modelMapper.map(product,ProductDto.class);
                     productDto.setCartNumber(cartId);
                     String productDtoString = objectMapper.writeValueAsString(productDto);
+                    System.out.println(" add product service before sending to kafka");
+
                     System.out.println(productDtoString);
                     kafkaTemplate.send("ADD-PRODUCT", productDtoString);
                     return true;
@@ -103,11 +105,13 @@ public class ShoppingCartService {
         }
         return false;
     }
-    public boolean removeProduct(Long cartId, Long productId) throws JsonProcessingException {
+    public boolean removeProduct(Long cartId, String productId) throws JsonProcessingException {
         if(shoppingCartDAO.existsById(cartId)){
+            System.out.println("cart exists");
             ShoppingCart cart = shoppingCartDAO.findById(cartId).get();
             Product product = cart.getCartLines().get(productId);
             if(product!=null){
+                System.out.println("product found");
                 cart.getCartLines().remove(productId);
                 updateShoppingCart(cart);
                 ProductDto productDto = modelMapper.map(product,ProductDto.class);
