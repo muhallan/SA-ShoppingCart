@@ -1,18 +1,14 @@
 package com.restapplication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restapplication.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
 
 @SpringBootApplication
 public class RestApplication implements CommandLineRunner {

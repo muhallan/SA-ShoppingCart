@@ -45,4 +45,14 @@ public class Order {
 	public void setCustomerID(String customerId) {
 		this.customerID = customerId;
 	}
+
+	@Override
+	public String toString() {
+		return "Order{" +
+				"orderNumber='" + orderNumber + '\'' +
+				", customerID='" + customerID + '\'' +
+				", customerInfo=" + customerInfo +
+				", orderLines=" + orderLines +
+				'}';
+	}
 }

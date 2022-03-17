@@ -7,6 +7,8 @@ import com.example.shoppingcartqueryservice.dao.ShoppingCartDAO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -23,6 +25,8 @@ public class CartQueryService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private static final Logger log = LoggerFactory.getLogger(CartQueryService.class);
+
     public ShoppingCart getShoppingCart(Long cartNumber){
         return shoppingCartDAO.findById(cartNumber).get();
     }
@@ -37,37 +41,31 @@ public class CartQueryService {
 
     @KafkaListener(topics = {"CART-CREATED"})
     public void createCart(@Payload String cartString) throws JsonProcessingException {
+        log.info("Received Kafka message on topic: CART-CREATED with payload: " + cartString);
         ShoppingCart newCart = objectMapper.readValue(cartString,ShoppingCart.class);
         shoppingCartDAO.save(newCart);
     }
 
     @KafkaListener(topics = {"CHECKOUT-FOR-QUERY"})
     public void checkOut(@Payload Long cartNumber)  {
+        log.info("Received Kafka message on topic: CHECKOUT-FOR-QUERY with payload: " + cartNumber);
        shoppingCartDAO.deleteById(cartNumber);
     }
 
     @KafkaListener(topics = {"REMOVE-PRODUCT"})
     public void removeProduct(@Payload String productDtoString ) throws  JsonProcessingException{
-        System.out.println("received the REMOVE-PRODUCT kafka message");
+        log.info("Received Kafka message on topic: REMOVE-PRODUCT with payload: " + productDtoString);
         ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
         Product product = modelMapper.map(productDto,Product.class);
         ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
-        System.out.println("shopping cart before deleting");
-        System.out.println(cart);
         cart.getCartLines().remove(product.getProductNumber());
-        System.out.println("shopping cart after deleting");
-        System.out.println(cart);
         shoppingCartDAO.save(cart);
-        System.out.println("shopping cart after saving");
-        ShoppingCart cart1 = getShoppingCart(productDto.getCartNumber());
-        System.out.println(cart1);
     }
 
     @KafkaListener(topics = {"ADD-PRODUCT"})
     public void addProduct(@Payload String productDtoString ) throws  JsonProcessingException{
-        System.out.println(" receiving from add product service from kafka");
+        log.info("Received Kafka message on topic: ADD-PRODUCT with payload: " + productDtoString);
         ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
-        System.out.println(productDto);
         Product product = modelMapper.map(productDto,Product.class);
         ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
         cart.getCartLines().put(product.getProductNumber(),product);
@@ -76,6 +74,7 @@ public class CartQueryService {
 
     @KafkaListener(topics = {"CHANGE-QUANTITY"})
     public  void changeQuantity(@Payload String productDtoString) throws JsonProcessingException {
+        log.info("Received Kafka message on topic: CHANGE-QUANTITY with payload: " + productDtoString);
         ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
         Product product = modelMapper.map(productDto,Product.class);
         ShoppingCart cart = getShoppingCart(productDto.getCartNumber());

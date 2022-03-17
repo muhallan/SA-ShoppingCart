@@ -5,6 +5,8 @@ import com.example.ShoppingCartCommandService.domain.Product;
 import com.example.ShoppingCartCommandService.domain.Quantity;
 import com.example.ShoppingCartCommandService.service.ShoppingCartService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,11 @@ public class ShoppingCartController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 
+    private static final Logger log = LoggerFactory.getLogger(ShoppingCartController.class);
+
     @PostMapping
     public ResponseEntity<String> createCart(@RequestBody Customer customer) throws JsonProcessingException {
+        log.info("POST request for /carts with body: " + customer);
         if(shoppingCartService.createShoppingCart(customer))
             return new ResponseEntity<>("SUCCESSFULLY CREATED CART", HttpStatus.OK);
         else
@@ -28,7 +33,7 @@ public class ShoppingCartController {
     @PutMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> updateCartQuantity(@RequestBody Quantity quantity, @PathVariable Long cartId,
                                    @PathVariable String productNumber) throws JsonProcessingException {
-
+        log.info("PUT request for /carts/" + cartId + "/products/" + productNumber + " with body: " + quantity);
         if(shoppingCartService.changeQuantity(quantity,cartId,productNumber))
             return new ResponseEntity<>("SUCCESSFULLY UPDATED QUANTITY", HttpStatus.OK);
         else
@@ -37,7 +42,7 @@ public class ShoppingCartController {
 
     @PostMapping("/{cartId}/products")
     public ResponseEntity<String> addProduct(@RequestBody Product product, @PathVariable Long cartId) throws JsonProcessingException {
-
+        log.info("POST request for /carts/" + cartId + "/products with body: " + product);
         if(shoppingCartService.addProduct(cartId,product))
             return new ResponseEntity<>("SUCCESSFULLY ADDED PRODUCT", HttpStatus.OK);
         else
@@ -46,7 +51,7 @@ public class ShoppingCartController {
 
     @DeleteMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> removeProduct(@PathVariable Long cartId, @PathVariable String productNumber) throws JsonProcessingException {
-        System.out.println("cardId " + cartId + " pNo " + productNumber);
+        log.info("DELETE request for /carts/" + cartId + "/products/" + productNumber);
         if(shoppingCartService.removeProduct(cartId, productNumber))
             return new ResponseEntity<>("SUCCESSFULLY REMOVED PRODUCT", HttpStatus.OK);
         else
@@ -55,7 +60,7 @@ public class ShoppingCartController {
 
     @GetMapping("/{cartId}/checkout")
     public ResponseEntity<String> checkoutCart(@PathVariable Long cartId) throws JsonProcessingException {
-
+        log.info("GET request for /carts/" + cartId + "/checkout");
         if(shoppingCartService.checkoutCart(cartId))
             return new ResponseEntity<>("CHECKOUT SUCCESS", HttpStatus.OK);
         else
