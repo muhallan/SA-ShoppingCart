@@ -113,6 +113,8 @@ public class ShoppingCartService {
             if(product!=null){
                 System.out.println("product found");
                 cart.getCartLines().remove(productId);
+                System.out.println("before removing cart");
+                System.out.println(cart);
                 updateShoppingCart(cart);
                 ProductDto productDto = modelMapper.map(product,ProductDto.class);
                 productDto.setCartNumber(cartId);

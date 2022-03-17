@@ -32,52 +32,50 @@ public class RestApplication implements CommandLineRunner {
         String shoppingCartUrl = "http://localhost:8086/cart-command-service/carts";
         String shoppingCartServiceUrl = "http://localhost:8086/cart-query-service/carts";
 
-        /**** 1. Add a number of products in the product service ****/
-        //add product1
+        /**** 1. Add a number of products to the product service ****/
+        //add product1 - book
         restTemplate.postForLocation(productUrl, new Product(
                 "1",
-                "1",
-                10000.0,
-                "First product",
+                "Book",
+                10.20,
+                "Amazing book",
                 100
         ));
 
-        //add product2
+        //add product2 - shoes
         restTemplate.postForLocation(productUrl, new Product(
                 "2",
-                "Product 2",
-                5000.0,
-                "Second product",
+                "Shoes",
+                44.43,
+                "High class shoes from Italy",
                 150
         ));
 
+        /** 2. Retrieve products in the product service ****/
         // get product1
+        System.out.println("----------- getting product1 -> book -----------------------");
         Product product1 = restTemplate.getForObject(productUrl + "/{productNumber}", Product.class, "1");
-        System.out.println("----------- get product1-----------------------");
         System.out.println(product1);
+
         // get product2
+        System.out.println("----------- getting product2 -> shoes -----------------------");
         Product product2 = restTemplate.getForObject(productUrl + "/{productNumber}", Product.class, "2");
-        /*System.out.println("----------- get product2-----------------------");
-        System.out.println(product2);*/
+        System.out.println(product2);
 
 
-
-        /**** 2. Modify a product in the productservice ****/
-        //modify product1
+        /**** 3. Modify a product in the productservice ****/
+        // modify product1's stock
         product1.setNumberInStock(200);
         restTemplate.put(productUrl + "/{productNumber}", product1, product1.getProductNumber());
 
-
-
-        /**** 3. Retrieve one or more products and show these products ****/
-        //get modified product
-        Product modifyProduct = restTemplate.getForObject(productUrl + "/{productNumber}", Product.class, "1");
-        System.out.println("----------- get modifyProduct1 (numberInStock changed) -----------------------");
-        System.out.println(modifyProduct);
+        // get and confirm modified product
+        Product modifiedProduct = restTemplate.getForObject(productUrl + "/{productNumber}", Product.class, "1");
+        System.out.println("----------- get modified Product1 -> shoes with numberInStock changed to 200 -----------------------");
+        System.out.println(modifiedProduct);
 
 
 
-//        // add customer
+        // Create a customer
         Customer customer1 = new Customer(
                 "customer1",
                 "Suzy",
@@ -90,73 +88,79 @@ public class RestApplication implements CommandLineRunner {
         );
         restTemplate.postForLocation(customerUrl + "/add", customer1);
 
-        //getCustomer
+        // get the added Customer
         Customer customer = restTemplate.getForObject(customerUrl + "/{cId}", Customer.class, "customer1");
-        System.out.println("----------- get customer1-----------------------");
+        System.out.println("----------- getting customer1 -> Suzy James -----------------------");
         System.out.println(customer);
 
 
 
         /**** 10. Add customer to order ****/
-        //create shopping cart for customer1
-        Long shoppingCartNumber = Long.valueOf(1);
+        // - First create a shopping cart for customer1 using the shopping cart command service
+        Long shoppingCartNumber = 1L;
         ShoppingCartCustomer shoppingCartCustomer = new ShoppingCartCustomer(customer1.getcId(), shoppingCartNumber);
         restTemplate.postForLocation(shoppingCartUrl, shoppingCartCustomer);
 
 
 
         /**** 4. Put some products in the shoppingcart  ****/
-        //put product to shopping cart
-        ShoppingCartProduct shoppingCartProduct = new ShoppingCartProduct(
-                Long.parseLong(product1.getProductNumber()),
-                product1.getNumberInStock(),
-                product1.getPrice());
-        restTemplate.postForLocation(shoppingCartUrl + "/{cartId}/products", shoppingCartProduct, shoppingCartNumber);
+        //- Put product1 to the shopping cart
         ShoppingCartProduct shoppingCartProduct1 = new ShoppingCartProduct(
-                Long.parseLong(product2.getProductNumber()),
-                product2.getNumberInStock(),
-                product2.getPrice());
+                Long.parseLong(product1.getProductNumber()),
+                8,
+                product1.getPrice());
         restTemplate.postForLocation(shoppingCartUrl + "/{cartId}/products", shoppingCartProduct1, shoppingCartNumber);
 
+        //- Also put product2 to the shopping cart
+        ShoppingCartProduct shoppingCartProduct2 = new ShoppingCartProduct(
+                Long.parseLong(product2.getProductNumber()),
+                23,
+                product2.getPrice());
+        restTemplate.postForLocation(shoppingCartUrl + "/{cartId}/products", shoppingCartProduct2, shoppingCartNumber);
 
 
-        /**** 5. Retrieve and show the shoppingcart  ****/
-        //get shopping cart
-        ResponseEntity<ShoppingCart[]> shoppingCart = restTemplate.getForEntity(shoppingCartServiceUrl, ShoppingCart[].class );
-        List<ShoppingCart> carts = Arrays.asList(shoppingCart.getBody());
-        System.out.println("----------- get shopping cart-----------------------");
-        System.out.println(carts);
+
+        /**** 5. Retrieve and show the shopping cart  ****/
+        // get the shopping cart from the shopping cart query service
+        ShoppingCart shoppingCart = restTemplate.getForObject(shoppingCartServiceUrl + "/{cartNumber}", ShoppingCart.class, shoppingCartNumber);
+        System.out.println("----------- getting the shopping cart with two products in it -----------------------");
+        System.out.println(shoppingCart);
 
 
-        /**** 7. Change the quantity of one of the products ****/
+        /**** 7. Change the quantity of one of the products in the shopping cart ****/
+        // change the quantity of product1 in the shopping cart from 8 to 5
         restTemplate.put(shoppingCartUrl + "/{cartId}/products/{productNumber}", new Quantity(5), shoppingCartNumber, product1.getProductNumber());
 
 
-        /**** 6. Delete one product from the shoppingcart ****/
-        restTemplate.delete(shoppingCartUrl + "/{cartId}/products/{productNumber}", shoppingCartNumber, product1.getProductNumber());
+        /**** 6. Delete one product from the shopping cart ****/
+        // delete product2 from the shopping cart
+        restTemplate.delete(shoppingCartUrl + "/{cartId}/products/{productNumber}", shoppingCartNumber, product2.getProductNumber());
 
 
 
-        /**** 8. Retrieve and show the shoppingcart  ****/
-        ShoppingCart shoppingCart1 = restTemplate.getForObject(
-                shoppingCartServiceUrl + "/{cartNumber}", ShoppingCart.class, shoppingCartNumber);
-        System.out.println("----------- get shopping cart-----------------------");
-        System.out.println(shoppingCart1);
+        /**** 8. Retrieve and show the shopping cart  ****/
+        // get the updated shopping cart for display
+        // add a sleep to allow for eventual consistency updating of the query service
+        Thread.sleep(2000);
+        ShoppingCart shoppingCartUpdated = restTemplate.getForObject(shoppingCartServiceUrl + "/{cartNumber}", ShoppingCart.class, shoppingCartNumber);
+        System.out.println("----------- getting the updated shopping cart, now with one product -----------------------");
+        System.out.println(shoppingCartUpdated);
 
 
 
-        /**** 9. Checkout the shoppingcart  ****/
+        /**** 9. Checkout the shopping cart  ****/
         String checkoutMessage = restTemplate.getForObject(shoppingCartUrl + "/{cartId}/checkout",  String.class, shoppingCartNumber);
+        System.out.println("----------- checking out and sending the order to order service -----------");
+        /**** 12. Place the order  ****/
         System.out.println(checkoutMessage);
 
 
 
         /**** 11. Retrieve and show the order  ****/
-        //retrieve order
-        Orders orders = restTemplate.getForObject(orderUrl + "/customers/{customerID}", Orders.class, "customer1");
-        //show order
-        System.out.println("----------- get order1-----------------------");
-        System.out.println(orders);
+        // retrieve order for customer1
+        Orders order = restTemplate.getForObject(orderUrl + "/customers/{customerID}", Orders.class, "customer1");
+        System.out.println("----------- getting order1 for customer1 -----------------------");
+        System.out.println(order);
 
     }
 

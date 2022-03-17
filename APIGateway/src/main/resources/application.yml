@@ -37,3 +37,6 @@ zuul:
       path: /cart-query-service/**
       serviceId: cart-query-service
       stripPrefix: true
+
+ribbon:
+  ReadTimeout=100000:

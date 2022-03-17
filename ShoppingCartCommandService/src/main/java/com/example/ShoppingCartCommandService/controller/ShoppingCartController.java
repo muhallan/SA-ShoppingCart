@@ -24,6 +24,7 @@ public class ShoppingCartController {
             return new ResponseEntity<String>("CART NOT CREATED", HttpStatus.BAD_REQUEST);
 
     }
+
     @PutMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> updateCartQuantity(@RequestBody Quantity quantity, @PathVariable Long cartId,
                                    @PathVariable String productNumber) throws JsonProcessingException {
@@ -33,6 +34,7 @@ public class ShoppingCartController {
         else
             return new ResponseEntity<String>("QUANTITY NOT UPDATED", HttpStatus.BAD_REQUEST);
     }
+
     @PostMapping("/{cartId}/products")
     public ResponseEntity<String> addProduct(@RequestBody Product product, @PathVariable Long cartId) throws JsonProcessingException {
 
@@ -41,14 +43,16 @@ public class ShoppingCartController {
         else
             return new ResponseEntity<String>("PRODUCT NOT ADDED", HttpStatus.BAD_REQUEST);
     }
+
     @DeleteMapping("/{cartId}/products/{productNumber}")
     public ResponseEntity<String> removeProduct(@PathVariable Long cartId, @PathVariable String productNumber) throws JsonProcessingException {
         System.out.println("cardId " + cartId + " pNo " + productNumber);
-        if(shoppingCartService.removeProduct(cartId,productNumber))
+        if(shoppingCartService.removeProduct(cartId, productNumber))
             return new ResponseEntity<>("SUCCESSFULLY REMOVED PRODUCT", HttpStatus.OK);
         else
             return new ResponseEntity<String>("PRODUCT NOT REMOVED", HttpStatus.BAD_REQUEST);
     }
+
     @GetMapping("/{cartId}/checkout")
     public ResponseEntity<String> checkoutCart(@PathVariable Long cartId) throws JsonProcessingException {
 

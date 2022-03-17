@@ -48,13 +48,19 @@ public class CartQueryService {
 
     @KafkaListener(topics = {"REMOVE-PRODUCT"})
     public void removeProduct(@Payload String productDtoString ) throws  JsonProcessingException{
-
+        System.out.println("received the REMOVE-PRODUCT kafka message");
         ProductDto productDto = objectMapper.readValue(productDtoString,ProductDto.class);
         Product product = modelMapper.map(productDto,Product.class);
         ShoppingCart cart = getShoppingCart(productDto.getCartNumber());
+        System.out.println("shopping cart before deleting");
+        System.out.println(cart);
         cart.getCartLines().remove(product.getProductNumber());
+        System.out.println("shopping cart after deleting");
+        System.out.println(cart);
         shoppingCartDAO.save(cart);
-
+        System.out.println("shopping cart after saving");
+        ShoppingCart cart1 = getShoppingCart(productDto.getCartNumber());
+        System.out.println(cart1);
     }
 
     @KafkaListener(topics = {"ADD-PRODUCT"})
